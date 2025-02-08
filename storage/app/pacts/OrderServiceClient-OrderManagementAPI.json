@@ -1,0 +1,203 @@
+{
+  "consumer": {
+    "name": "OrderServiceClient"
+  },
+  "interactions": [
+    {
+      "description": "Create an order",
+      "request": {
+        "body": {
+          "generate_invoice": 1,
+          "items": [
+            {
+              "discount": 0,
+              "price": 100,
+              "quantity": 1,
+              "service_id": "26307ceb-6947-48df-a8d3-dd7c493accf3"
+            },
+            {
+              "discount": 100,
+              "price": 1500,
+              "quantity": 1,
+              "service_id": "7513e6f2-f60b-46e7-96e6-8de6b49c1d37"
+            }
+          ],
+          "patient_id": "7efac622-4664-44a3-aede-c97816449bfd",
+          "payment_installments": 2
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/order/create"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "order": {
+              "id": "",
+              "items": [
+                {
+                  "discount": 0,
+                  "id": "",
+                  "price": 100,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "26307ceb-6947-48df-a8d3-dd7c493accf3",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 100
+                },
+                {
+                  "discount": 100,
+                  "id": "",
+                  "price": 1500,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "7513e6f2-f60b-46e7-96e6-8de6b49c1d37",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 1400
+                }
+              ],
+              "order_date": "2024-12-14T11:02:42.000000Z",
+              "patient_id": "",
+              "status": "CREATED",
+              "total": 1500
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data.order.id": {
+              "type": "Uuid"
+            },
+            "$.data.order.items[0].id": {
+              "type": "Uuid"
+            },
+            "$.data.order.items[1].id": {
+              "type": "Uuid"
+            },
+            "$.data.order.patient_id": {
+              "type": "Uuid"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.order.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[0].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.order_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data.order.patient_id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pactRust": {
+      "ffi": "0.4.26",
+      "mockserver": "1.2.11",
+      "models": "1.2.7"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "OrderManagementAPI"
+  }
+}
