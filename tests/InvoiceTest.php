@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Pact;
 
-use Tests\Feature\Pact\PactBaseTest;
+use Illuminate\Support\Str;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
-use Illuminate\Support\Str;
 
 class InvoiceTest extends PactBaseTest
 {
@@ -88,7 +87,7 @@ class InvoiceTest extends PactBaseTest
 
         //Assert response is an array
         $this->assertIsArray($orderResult, "Response is not an array.");
-        
+
         //Assert 'data' key exists
         $this->assertArrayHasKey('data', $orderResult, "Response does not contain 'data' key.");
         $this->assertIsArray($orderResult['data'], "'data' is not an array.");
