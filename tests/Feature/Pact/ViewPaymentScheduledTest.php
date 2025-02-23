@@ -7,9 +7,9 @@ use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 
-class ViewOrderTest extends PactBase
+class ViewPaymentScheduledTest extends PactBase
 {
-    public function test_create_and_view_order()
+    public function test_view_payment_scheduled()
     {
         error_reporting(1);
 
@@ -59,13 +59,13 @@ class ViewOrderTest extends PactBase
 
         $viewRequest = new ConsumerRequest;
         $viewRequest->setMethod('GET')
-            ->setPath('/order/view/'.$orderId)
+            ->setPath('/payment/view-by-order/'.$orderId)
             ->addHeader('Accept', 'application/json');
 
         $viewResponse = new ProviderResponse;
         $viewResponse->setStatus(200)
             ->addHeader('Content-Type', 'application/json')
-            ->setBody($this->getOrderBody($matcher, $orderId, $total, $uuidService1, $uuidService2));
+            ->setBody($this->getInvoiceBody($matcher, $orderId));
 
         $this->builder
             ->given('An order exists', [
@@ -76,7 +76,7 @@ class ViewOrderTest extends PactBase
                 'uuid_service_1' => $uuidService1,
                 'uuid_service_2' => $uuidService2,
             ])
-            ->uponReceiving('Get an order')
+            ->uponReceiving('Get a payment scheduled')
             ->with($viewRequest)
             ->willRespondWith($viewResponse);
 
@@ -105,38 +105,7 @@ class ViewOrderTest extends PactBase
         ]);
 
         // Execute the "Get an order" call.
-        $orderViewResult = $service->getOrder($orderId);
-
-        // Order id is the same for both create and view order.
-        $this->assertEquals($orderId, $orderCreateResult['data']['order']['id']);
-        $this->assertEquals($orderId, $orderViewResult['data']['order']['id']);
-
-        // Assert response is an array
-        $this->assertIsArray($orderViewResult, 'Response is not an array.');
-
-        // Assert 'data' key exists
-        $this->assertArrayHasKey('data', $orderViewResult, "Response does not contain 'data' key.");
-        $this->assertIsArray($orderViewResult['data'], "'data' is not an array.");
-
-        // Assert 'data' has a child key 'order'
-        $this->assertArrayHasKey('order', $orderViewResult['data'], "'data' does not contain 'order' key.");
-        $this->assertIsArray($orderViewResult['data']['order'], "'order' is not an array.");
-
-        // Assert 'order' has an array of 'items'
-        $this->assertArrayHasKey('items', $orderViewResult['data']['order'], "'order' does not contain 'items' key.");
-        $this->assertIsArray($orderViewResult['data']['order']['items'], "'items' is not an array.");
-
-        // Assert 'total' is the same as the one sent
-        $this->assertEquals($total, $orderViewResult['data']['order']['total'], 'Total does not match.');
-
-        // Assert at least one item exists
-        $this->assertNotEmpty($orderViewResult['data']['order']['items'], "'items' array is empty.");
-
-        // Assert first item is same 'service id' than the first item sent
-        $this->assertEquals($uuidService1, $orderViewResult['data']['order']['items'][0]['service_id'], 'First item service id does not match.');
-
-        // Assert second item is same 'service id' than the second item sent
-        $this->assertEquals($uuidService2, $orderViewResult['data']['order']['items'][1]['service_id'], 'First item service id does not match.');
+        $orderViewResult = $service->getPaymentSchedued($orderId);
     }
 
     private function getOrderBody($matcher, $orderId, $total, $uuidService1, $uuidService2): array
@@ -176,6 +145,42 @@ class ViewOrderTest extends PactBase
                             'discount' => 100,
                             'subtotal' => 1400,
                         ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function getInvoiceBody($matcher, $orderId): array
+    {
+        return [
+            'data' => [
+                [
+                    'payment' => [
+                        'id' => $matcher->uuid(),
+                        'number' => $matcher->number(1),
+                        'amount' => $matcher->number('3'),
+                        'due_date' => $matcher->regex(
+                            '2024-12-14T11:02:42.000000Z',
+                            '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$'
+                        ),
+                        'status' => $matcher->string('PENDING'),
+                        'currency' => $matcher->string('BOB'),
+                        'order_id' => $matcher->uuid($orderId),
+                    ],
+                ],
+                [
+                    'payment' => [
+                        'id' => $matcher->uuid(),
+                        'number' => $matcher->number(1),
+                        'amount' => $matcher->number('3'),
+                        'due_date' => $matcher->regex(
+                            '2024-12-14T11:02:42.000000Z',
+                            '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$'
+                        ),
+                        'status' => $matcher->string('PENDING'),
+                        'currency' => $matcher->string('BOB'),
+                        'order_id' => $matcher->uuid($orderId),
                     ],
                 ],
             ],

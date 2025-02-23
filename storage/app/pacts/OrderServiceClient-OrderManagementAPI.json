@@ -13,16 +13,16 @@
               "discount": 0,
               "price": 100,
               "quantity": 1,
-              "service_id": "f5d45b4e-cfe8-4dd7-9a98-cf98d45b631c"
+              "service_id": "c47721af-d0cd-4643-8a29-416c96cd2079"
             },
             {
               "discount": 100,
               "price": 1500,
               "quantity": 1,
-              "service_id": "077295af-2c8d-4e67-a0a6-34f37fa96289"
+              "service_id": "fbf18cc5-34c6-411e-b52f-bd545c17db53"
             }
           ],
-          "patient_id": "dbe279ec-8108-4498-ae75-4f0783cf6fb5",
+          "patient_id": "6257f523-8411-4344-8be4-0a77e0076e96",
           "payment_installments": 2
         },
         "headers": {
@@ -35,7 +35,7 @@
         "body": {
           "data": {
             "order": {
-              "id": "5aa78c8e-2a54-40af-8369-b54967a6b23a",
+              "id": "97c6bd70-1414-42bd-b993-81a70ad59448",
               "items": [
                 {
                   "discount": 0,
@@ -43,7 +43,7 @@
                   "price": 100,
                   "quantity": 1,
                   "service_code": "11111",
-                  "service_id": "f5d45b4e-cfe8-4dd7-9a98-cf98d45b631c",
+                  "service_id": "c47721af-d0cd-4643-8a29-416c96cd2079",
                   "service_name": "Consulta de catering.",
                   "service_unit": "Servicio",
                   "subtotal": 100
@@ -54,7 +54,7 @@
                   "price": 1500,
                   "quantity": 1,
                   "service_code": "11111",
-                  "service_id": "077295af-2c8d-4e67-a0a6-34f37fa96289",
+                  "service_id": "fbf18cc5-34c6-411e-b52f-bd545c17db53",
                   "service_name": "Consulta de catering.",
                   "service_unit": "Servicio",
                   "subtotal": 1400
@@ -184,30 +184,43 @@
       }
     },
     {
-      "description": "Get an order",
+      "description": "Create an invoice",
       "providerStates": [
         {
           "name": "An order exists",
           "params": {
-            "order_id": "5aa78c8e-2a54-40af-8369-b54967a6b23a",
-            "patient_id": "dbe279ec-8108-4498-ae75-4f0783cf6fb5",
-            "uuid_service_1": "f5d45b4e-cfe8-4dd7-9a98-cf98d45b631c",
-            "uuid_service_2": "077295af-2c8d-4e67-a0a6-34f37fa96289"
+            "generate_invoice": 0,
+            "invoice_id": "3d89bf09-605a-46e7-985b-146e1f75262d",
+            "order_id": "276c5900-4600-486e-a7dc-2dcd4c795f44",
+            "patient_id": "7f7bc7eb-48db-46c3-af65-0d737ca55b78",
+            "payment_installments": 2,
+            "uuid_service_1": "379e2c06-c6ad-4e18-a79d-6ab5b69253b7",
+            "uuid_service_2": "1a3e51b5-7226-41f8-95c9-c61e8482acc0"
           }
         }
       ],
       "request": {
-        "headers": {
-          "Accept": "application/json"
+        "body": {
+          "customer_id": "7f7bc7eb-48db-46c3-af65-0d737ca55b78",
+          "order_id": "276c5900-4600-486e-a7dc-2dcd4c795f44"
         },
-        "method": "GET",
-        "path": "/order/view/5aa78c8e-2a54-40af-8369-b54967a6b23a"
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/invoice/create"
       },
       "response": {
         "body": {
           "data": {
-            "order": {
-              "id": "5aa78c8e-2a54-40af-8369-b54967a6b23a",
+            "invoice": {
+              "authorization_code": "465A9780DBD5FD71F22F720B938CAF5AE3EB03980654FFCCE54549E74",
+              "customer_code": 1000,
+              "customer_id": "7f7bc7eb-48db-46c3-af65-0d737ca55b78",
+              "customer_name": "Janiya Schiller",
+              "customer_nit": 7659198,
+              "id": "3d89bf09-605a-46e7-985b-146e1f75262d",
+              "invoice_date": "2024-12-14T11:02:42.000000Z",
               "items": [
                 {
                   "discount": 0,
@@ -215,7 +228,7 @@
                   "price": 100,
                   "quantity": 1,
                   "service_code": "11111",
-                  "service_id": "f5d45b4e-cfe8-4dd7-9a98-cf98d45b631c",
+                  "service_id": "379e2c06-c6ad-4e18-a79d-6ab5b69253b7",
                   "service_name": "Consulta de catering.",
                   "service_unit": "Servicio",
                   "subtotal": 100
@@ -226,7 +239,793 @@
                   "price": 1500,
                   "quantity": 1,
                   "service_code": "11111",
-                  "service_id": "077295af-2c8d-4e67-a0a6-34f37fa96289",
+                  "service_id": "1a3e51b5-7226-41f8-95c9-c61e8482acc0",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 1400
+                }
+              ],
+              "nit": "171283817238128",
+              "number": 2,
+              "status": "CREATED",
+              "total": 1500
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data.invoice.items[0].id": {
+              "type": "Uuid"
+            },
+            "$.data.invoice.items[1].id": {
+              "type": "Uuid"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.invoice.authorization_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.customer_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data.invoice.customer_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.customer_nit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data.invoice.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.invoice_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.nit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "Get a payment scheduled",
+      "providerStates": [
+        {
+          "name": "An order exists",
+          "params": {
+            "generate_invoice": 1,
+            "order_id": "97c6bd70-1414-42bd-b993-81a70ad59448",
+            "patient_id": "6257f523-8411-4344-8be4-0a77e0076e96",
+            "payment_installments": 2,
+            "uuid_service_1": "c47721af-d0cd-4643-8a29-416c96cd2079",
+            "uuid_service_2": "fbf18cc5-34c6-411e-b52f-bd545c17db53"
+          }
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/payment/view-by-order/97c6bd70-1414-42bd-b993-81a70ad59448"
+      },
+      "response": {
+        "body": {
+          "data": [
+            {
+              "payment": {
+                "amount": 3,
+                "currency": "BOB",
+                "due_date": "2024-12-14T11:02:42.000000Z",
+                "id": "",
+                "number": 1,
+                "order_id": "97c6bd70-1414-42bd-b993-81a70ad59448",
+                "status": "PENDING"
+              }
+            },
+            {
+              "payment": {
+                "amount": 3,
+                "currency": "BOB",
+                "due_date": "2024-12-14T11:02:42.000000Z",
+                "id": "",
+                "number": 1,
+                "order_id": "97c6bd70-1414-42bd-b993-81a70ad59448",
+                "status": "PENDING"
+              }
+            }
+          ]
+        },
+        "generators": {
+          "body": {
+            "$.data[0].payment.id": {
+              "type": "Uuid"
+            },
+            "$.data[1].payment.id": {
+              "type": "Uuid"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data[0].payment.amount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data[0].payment.currency": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data[0].payment.due_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data[0].payment.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data[0].payment.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data[0].payment.order_id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data[0].payment.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data[1].payment.amount": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data[1].payment.currency": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data[1].payment.due_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data[1].payment.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data[1].payment.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data[1].payment.order_id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data[1].payment.status": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "Get an invoice",
+      "providerStates": [
+        {
+          "name": "An order exists",
+          "params": {
+            "generate_invoice": 1,
+            "order_id": "e02f3fde-35eb-44ea-bd8c-b1f741d9d868",
+            "patient_id": "7c940636-37b6-4199-a206-d49bdb365636",
+            "payment_installments": 2,
+            "uuid_service_1": "ed5c5862-7a95-4f12-b0ac-0a7912483af4",
+            "uuid_service_2": "670c63ac-ddc0-4a84-98ee-e51d73fdc5ce"
+          }
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/order/view/e02f3fde-35eb-44ea-bd8c-b1f741d9d868"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "order": {
+              "id": "e02f3fde-35eb-44ea-bd8c-b1f741d9d868",
+              "items": [
+                {
+                  "discount": 0,
+                  "id": "",
+                  "price": 100,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "ed5c5862-7a95-4f12-b0ac-0a7912483af4",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 100
+                },
+                {
+                  "discount": 100,
+                  "id": "",
+                  "price": 1500,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "670c63ac-ddc0-4a84-98ee-e51d73fdc5ce",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 1400
+                }
+              ],
+              "order_date": "2024-12-14T11:02:42.000000Z",
+              "patient_id": "",
+              "status": "CREATED",
+              "total": 1500
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data.order.items[0].id": {
+              "type": "Uuid"
+            },
+            "$.data.order.items[1].id": {
+              "type": "Uuid"
+            },
+            "$.data.order.patient_id": {
+              "type": "Uuid"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.order.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[0].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[0].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.items[1].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.order.order_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data.order.patient_id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "Get an invoice",
+      "providerStates": [
+        {
+          "name": "An order exists with the invoice generated",
+          "params": {
+            "invoice_id": "98e5d5e9-4d88-4690-b93b-0b163ad4d2d4",
+            "order_id": "8a38cc3c-dfc0-4aa3-9977-f529cb888f59",
+            "patient_id": "9f412702-f514-49f9-90dd-4739789d60c2",
+            "uuid_service_1": "429a4229-163c-4332-81ab-0dc783923ea7",
+            "uuid_service_2": "a46367f6-8e08-43af-8386-a8f50240a2cf"
+          }
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/invoice/view/98e5d5e9-4d88-4690-b93b-0b163ad4d2d4"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "invoice": {
+              "authorization_code": "465A9780DBD5FD71F22F720B938CAF5AE3EB03980654FFCCE54549E74",
+              "customer_code": 1000,
+              "customer_id": "9f412702-f514-49f9-90dd-4739789d60c2",
+              "customer_name": "Janiya Schiller",
+              "customer_nit": 7659198,
+              "id": "98e5d5e9-4d88-4690-b93b-0b163ad4d2d4",
+              "invoice_date": "2024-12-14T11:02:42.000000Z",
+              "items": [
+                {
+                  "discount": 0,
+                  "id": "",
+                  "price": 100,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "429a4229-163c-4332-81ab-0dc783923ea7",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 100
+                },
+                {
+                  "discount": 100,
+                  "id": "",
+                  "price": 1500,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "a46367f6-8e08-43af-8386-a8f50240a2cf",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 1400
+                }
+              ],
+              "nit": "171283817238128",
+              "number": 2,
+              "status": "CREATED",
+              "total": 1500
+            }
+          }
+        },
+        "generators": {
+          "body": {
+            "$.data.invoice.items[0].id": {
+              "type": "Uuid"
+            },
+            "$.data.invoice.items[1].id": {
+              "type": "Uuid"
+            }
+          }
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.data.invoice.authorization_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.customer_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data.invoice.customer_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.customer_nit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            },
+            "$.data.invoice.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.invoice_date": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[0].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "regex",
+                  "regex": "^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_code": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.items[1].service_unit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.nit": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.data.invoice.number": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "number"
+                }
+              ]
+            }
+          }
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "Get an order",
+      "providerStates": [
+        {
+          "name": "An order exists",
+          "params": {
+            "generate_invoice": 1,
+            "order_id": "a51a6b58-e6a7-44eb-bf5f-e764ee40c38d",
+            "patient_id": "39f95705-75dc-464e-b2b8-a48ccc79b986",
+            "payment_installments": 2,
+            "uuid_service_1": "31872155-5f53-4f6f-a5f0-86b5a9323c4a",
+            "uuid_service_2": "a62fbd4d-e156-43f1-95d9-4113962da3f2"
+          }
+        }
+      ],
+      "request": {
+        "headers": {
+          "Accept": "application/json"
+        },
+        "method": "GET",
+        "path": "/order/view/a51a6b58-e6a7-44eb-bf5f-e764ee40c38d"
+      },
+      "response": {
+        "body": {
+          "data": {
+            "order": {
+              "id": "a51a6b58-e6a7-44eb-bf5f-e764ee40c38d",
+              "items": [
+                {
+                  "discount": 0,
+                  "id": "",
+                  "price": 100,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "31872155-5f53-4f6f-a5f0-86b5a9323c4a",
+                  "service_name": "Consulta de catering.",
+                  "service_unit": "Servicio",
+                  "subtotal": 100
+                },
+                {
+                  "discount": 100,
+                  "id": "",
+                  "price": 1500,
+                  "quantity": 1,
+                  "service_code": "11111",
+                  "service_id": "a62fbd4d-e156-43f1-95d9-4113962da3f2",
                   "service_name": "Consulta de catering.",
                   "service_unit": "Servicio",
                   "subtotal": 1400

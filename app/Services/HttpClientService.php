@@ -47,4 +47,41 @@ class HttpClientService
 
         return json_decode($response->getBody()->getContents(), true);
     }
+
+    /**
+     * Create an invoice by sending a POST request.
+     */
+    public function createInvoice(array $orderData): array
+    {
+        $response = $this->client->request('POST', '/invoice/create', [
+            'headers' => [],
+            'json' => $orderData,
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    /**
+     * Get an invoice by sending a GET request.
+     */
+    public function getInvoice(string $invoiceId): array
+    {
+        $response = $this->client->request('GET', '/invoice/view/'.$invoiceId, [
+            'headers' => [],
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
+    /**
+     * Get an payment scheduled by sending a GET request.
+     */
+    public function getPaymentSchedued(string $orderId): array
+    {
+        $response = $this->client->request('GET', '/payment/view-by-order/'.$orderId, [
+            'headers' => [],
+        ]);
+
+        return json_decode($response->getBody()->getContents(), true);
+    }
 }

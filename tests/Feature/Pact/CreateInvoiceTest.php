@@ -7,14 +7,14 @@ use PhpPact\Consumer\Matcher\Matcher;
 use PhpPact\Consumer\Model\ConsumerRequest;
 use PhpPact\Consumer\Model\ProviderResponse;
 
-class ViewOrderTest extends PactBase
+class CreateInvoiceTest extends PactBase
 {
-    public function test_create_and_view_order()
+    public function test_create_an_invoice()
     {
         error_reporting(1);
 
-        [$orderId, $uuidPatient, $uuidService1, $uuidService2, $total] = [
-            Str::uuid(), Str::uuid(), Str::uuid(), Str::uuid(), 1500,
+        [$orderId, $invoiceId, $uuidPatient, $uuidService1, $uuidService2, $total] = [
+            Str::uuid(), Str::uuid(), Str::uuid(), Str::uuid(), Str::uuid(), 1500,
         ];
 
         $matcher = new Matcher;
@@ -25,7 +25,9 @@ class ViewOrderTest extends PactBase
             ->addHeader('Content-Type', 'application/json')
             ->setBody([
                 'patient_id' => $uuidPatient,
-                'generate_invoice' => 1,
+                // '0' don't generate invoice when order is created yet
+                // but manually generate it calling its endpoint
+                'generate_invoice' => 0,
                 'payment_installments' => 2,
                 'items' => [
                     [
@@ -54,31 +56,36 @@ class ViewOrderTest extends PactBase
             ->with($createRequest)
             ->willRespondWith($createResponse, false); // Don't start the mock server yet
 
-        // Register a new interaction for "View an order".
+        // Register a new interaction for "Create invoice".
         $this->builder->newInteraction();
 
-        $viewRequest = new ConsumerRequest;
-        $viewRequest->setMethod('GET')
-            ->setPath('/order/view/'.$orderId)
-            ->addHeader('Accept', 'application/json');
-
-        $viewResponse = new ProviderResponse;
-        $viewResponse->setStatus(200)
+        $invoiceRequest = new ConsumerRequest;
+        $invoiceRequest->setMethod('POST')
+            ->setPath('/invoice/create')
             ->addHeader('Content-Type', 'application/json')
-            ->setBody($this->getOrderBody($matcher, $orderId, $total, $uuidService1, $uuidService2));
+            ->setBody([
+                'order_id' => $orderId,
+                'customer_id' => $uuidPatient,
+            ]);
+
+        $invoiceResponse = new ProviderResponse;
+        $invoiceResponse->setStatus(200)
+            ->addHeader('Content-Type', 'application/json')
+            ->setBody($this->getInvoiceBody($matcher, $orderId, $invoiceId, $uuidPatient, $total, $uuidService1, $uuidService2));
 
         $this->builder
             ->given('An order exists', [
                 'order_id' => $orderId,
-                'generate_invoice' => 1,
+                'generate_invoice' => 0,
                 'payment_installments' => 2,
+                'invoice_id' => $invoiceId,
                 'patient_id' => $uuidPatient,
                 'uuid_service_1' => $uuidService1,
                 'uuid_service_2' => $uuidService2,
             ])
-            ->uponReceiving('Get an order')
-            ->with($viewRequest)
-            ->willRespondWith($viewResponse);
+            ->uponReceiving('Create an invoice')
+            ->with($invoiceRequest)
+            ->willRespondWith($invoiceResponse);
 
         // Now that both interactions are registered, create the service instance.
         $service = new \App\Services\HttpClientService($this->config->getBaseUri());
@@ -86,7 +93,7 @@ class ViewOrderTest extends PactBase
         // Execute the "Create an order" call.
         $orderCreateResult = $service->createOrder([
             'patient_id' => $uuidPatient,
-            'generate_invoice' => 1,
+            'generate_invoice' => 0,
             'payment_installments' => 2,
             'items' => [
                 [
@@ -104,39 +111,17 @@ class ViewOrderTest extends PactBase
             ],
         ]);
 
-        // Execute the "Get an order" call.
-        $orderViewResult = $service->getOrder($orderId);
+        // Execute the "Create an invoice" call.
+        $invoiceCreateResult = $service->createInvoice([
+            'order_id' => $orderId,
+            'customer_id' => $uuidPatient,
+        ]);
 
-        // Order id is the same for both create and view order.
+        // Check order id is the same than provided
         $this->assertEquals($orderId, $orderCreateResult['data']['order']['id']);
-        $this->assertEquals($orderId, $orderViewResult['data']['order']['id']);
 
-        // Assert response is an array
-        $this->assertIsArray($orderViewResult, 'Response is not an array.');
-
-        // Assert 'data' key exists
-        $this->assertArrayHasKey('data', $orderViewResult, "Response does not contain 'data' key.");
-        $this->assertIsArray($orderViewResult['data'], "'data' is not an array.");
-
-        // Assert 'data' has a child key 'order'
-        $this->assertArrayHasKey('order', $orderViewResult['data'], "'data' does not contain 'order' key.");
-        $this->assertIsArray($orderViewResult['data']['order'], "'order' is not an array.");
-
-        // Assert 'order' has an array of 'items'
-        $this->assertArrayHasKey('items', $orderViewResult['data']['order'], "'order' does not contain 'items' key.");
-        $this->assertIsArray($orderViewResult['data']['order']['items'], "'items' is not an array.");
-
-        // Assert 'total' is the same as the one sent
-        $this->assertEquals($total, $orderViewResult['data']['order']['total'], 'Total does not match.');
-
-        // Assert at least one item exists
-        $this->assertNotEmpty($orderViewResult['data']['order']['items'], "'items' array is empty.");
-
-        // Assert first item is same 'service id' than the first item sent
-        $this->assertEquals($uuidService1, $orderViewResult['data']['order']['items'][0]['service_id'], 'First item service id does not match.');
-
-        // Assert second item is same 'service id' than the second item sent
-        $this->assertEquals($uuidService2, $orderViewResult['data']['order']['items'][1]['service_id'], 'First item service id does not match.');
+        // Check invoice id item exists
+        // $this->assertArrayHasKey('id', $invoiceCreateResult['data']['invoice'], "'invoice' does not contain 'id' key.");
     }
 
     private function getOrderBody($matcher, $orderId, $total, $uuidService1, $uuidService2): array
@@ -151,6 +136,55 @@ class ViewOrderTest extends PactBase
                         '2024-12-14T11:02:42.000000Z',
                         '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$'
                     ),
+                    'status' => 'CREATED',
+                    'total' => $total,
+                    'items' => [
+                        [
+                            'id' => $matcher->uuid(),
+                            'service_id' => $uuidService1,
+                            'service_code' => $matcher->string('11111'),
+                            'service_name' => $matcher->string('Consulta de catering.'),
+                            'service_unit' => $matcher->string('Servicio'),
+                            'quantity' => 1,
+                            'price' => 100,
+                            'discount' => 0,
+                            'subtotal' => 100,
+                        ],
+                        [
+                            'id' => $matcher->uuid(),
+                            'service_id' => $uuidService2,
+                            'service_code' => $matcher->string('11111'),
+                            'service_name' => $matcher->string('Consulta de catering.'),
+                            'service_unit' => $matcher->string('Servicio'),
+                            'quantity' => 1,
+                            'price' => 1500,
+                            'discount' => 100,
+                            'subtotal' => 1400,
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function getInvoiceBody($matcher, $orderId, $invoiceId, $uuidPatient, $total, $uuidService1, $uuidService2): array
+    {
+        return [
+            'data' => [
+                'invoice' => [
+                    // Return the same invoice id generated above.
+                    'id' => $matcher->uuid($invoiceId),
+                    'nit' => $matcher->string('171283817238128'),
+                    'number' => $matcher->number(2),
+                    'authorization_code' => $matcher->string('465A9780DBD5FD71F22F720B938CAF5AE3EB03980654FFCCE54549E74'),
+                    'invoice_date' => $matcher->regex(
+                        '2024-12-14T11:02:42.000000Z',
+                        '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$'
+                    ),
+                    'customer_id' => $uuidPatient,
+                    'customer_code' => $matcher->number(1000),
+                    'customer_name' => $matcher->string('Janiya Schiller'),
+                    'customer_nit' => $matcher->number(7659198),
                     'status' => 'CREATED',
                     'total' => $total,
                     'items' => [
